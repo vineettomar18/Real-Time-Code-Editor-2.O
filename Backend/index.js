@@ -2,10 +2,27 @@ import express from "express";
 import http from "http";
 import { Server } from "socket.io";
 import path from "path";
+import axios from "axios";
 
 const app = express();
 
 const server = http.createServer(app);
+
+const url = `https://realtime-code-editor-final.onrender.com`;
+const interval = 30000;
+
+function reloadWebsite() {
+  axios
+    .get(url)
+    .then((response) => {
+      console.log("website reloded");
+    })
+    .catch((error) => {
+      console.error(`Error : ${error.message}`);
+    });
+}
+
+setInterval(reloadWebsite, interval);
 
 const io = new Server(server, {
   cors: {
@@ -66,6 +83,59 @@ let currentRoom = null;
     io.to(roomId).emit("languageUpdate", language);
   });
 
+
+socket.on("compileCode", async ({ code, roomId, language }) => {
+
+  const languageMap = {
+    javascript: 63,
+    python: 71,
+    java: 62,
+    cpp: 54
+  };
+
+  try {
+
+    const response = await axios.post(
+  "https://ce.judge0.com/submissions?base64_encoded=false&wait=true",
+  {
+    source_code: code,
+    language_id: languageMap[language]
+  },
+  {
+    headers: {
+      "Content-Type": "application/json"
+    }
+  }
+);
+
+    const result = response.data;
+
+    const output =
+      result.stdout ||
+      result.stderr ||
+      result.compile_output ||
+      "No Output";
+
+    io.to(roomId).emit("codeResponse", {
+      run: {
+        output: output
+      }
+    });
+
+  } catch (error) {
+
+    console.error("API ERROR:", error.response?.data || error.message);
+
+    io.to(roomId).emit("codeResponse", {
+      run: {
+        output: "Error executing code"
+      }
+    });
+
+  }
+
+});
+ 
   socket.on("disconnect", () => {
     if (currentRoom && currentUser) {
       rooms.get(currentRoom).delete(currentUser);
@@ -81,7 +151,7 @@ const __dirname = path.resolve();
 
 app.use(express.static(path.join(__dirname, "/Frontend/dist")));
 
-app.get("/", (req, res) => {
+app.use((req, res) => {
   res.sendFile(path.join(__dirname, "Frontend", "dist", "index.html"));
 });
 

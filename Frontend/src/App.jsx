@@ -3,7 +3,7 @@ import io from "socket.io-client";
 import { useState , useEffect} from "react";
 import Editor from "@monaco-editor/react";
 
-const socket = io("https://real-time-code-editor-1-onph.onrender.com");
+const socket = io("http://localhost:5000");
 
 const App = () => {
   const [joined, setJoined] = useState(false);
@@ -14,6 +14,9 @@ const App = () => {
   const [copySuccess, setCopySuccess] = useState("");
   const [users, setUsers] = useState([]);
   const [typing, setTyping] = useState("");
+   const [outPut, setOutPut] = useState("");
+  const [version, setVersion] = useState("*");
+
 
    useEffect(() => {
     socket.on("userJoined", (users) => {
@@ -33,11 +36,16 @@ const App = () => {
       setLanguage(newLanguage);
     });
 
+    socket.on("codeResponse", (response) => {
+      setOutPut(response.run.output);
+    });
+
      return () => {
       socket.off("userJoined");
       socket.off("codeUpdate");
       socket.off("userTyping");
       socket.off("languageUpdate");
+      socket.off("codeResponse");
     };
   }, []);
 
@@ -85,6 +93,10 @@ const App = () => {
     const newLanguage = e.target.value;
     setLanguage(newLanguage);
     socket.emit("languageChange", { roomId, language: newLanguage });
+  };
+
+   const runCode = () => {
+    socket.emit("compileCode", { code, roomId, language, version });
   };
 
   if (!joined) {
@@ -153,6 +165,15 @@ const App = () => {
             minimap: { enabled: false },
             fontSize: 14,
           }}
+        />
+         <button className="run-btn" onClick={runCode}>
+          Execute
+        </button>
+        <textarea
+          className="output-console"
+          value={outPut}
+          readOnly
+          placeholder="Output will appear here ..."
         />
       </div>
     </div>
