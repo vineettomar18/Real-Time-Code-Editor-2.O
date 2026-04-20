@@ -33,6 +33,7 @@ A modern real-time code editor that allows multiple users to collaborate simulta
 ---
 
 ## 📂 Project Structure
+
 root/
 │
 ├── client/ # Frontend (Next.js)
