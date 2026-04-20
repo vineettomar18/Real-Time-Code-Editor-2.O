@@ -42,7 +42,7 @@ A modern real-time code editor that allows multiple users to collaborate simulta
 ### 1️⃣ Clone the repository
 
 ```bash
-git clone https://https://github.com/vineettomar18/Real-Time-Code-Editor-2.O/
+git clone https://github.com/vineettomar18/Real-Time-Code-Editor-2.O/
 
 Install dependencies
 # Install frontend
