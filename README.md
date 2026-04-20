@@ -33,3 +33,31 @@ A modern real-time code editor that allows multiple users to collaborate simulta
 ---
 
 ## 📂 Project Structure
+
+
+---
+
+## ⚙️ Installation & Setup
+
+### 1️⃣ Clone the repository
+
+```bash
+git clone https://https://github.com/vineettomar18/Real-Time-Code-Editor-2.O/
+
+Install dependencies
+# Install frontend
+cd client
+npm install
+
+# Install backend
+cd ../server
+npm install
+
+Run the project
+# Start backend
+cd server
+npm run dev
+
+# Start frontend
+cd client
+npm run dev
