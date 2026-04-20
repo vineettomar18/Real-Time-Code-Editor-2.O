@@ -32,24 +32,6 @@ A modern real-time code editor that allows multiple users to collaborate simulta
 
 ---
 
-## 📂 Project Structure
-
-root/
-│
-├── client/ # Frontend (Next.js)
-│ ├── components/
-│ ├── pages/
-│ ├── styles/
-│
-├── server/ # Backend (Node.js + Socket.IO)
-│ ├── controllers/
-│ ├── sockets/
-│
-├── package.json
-└── README.md
-
----
-
 ## ⚙️ Installation & Setup
 
 ### 1️⃣ Clone the repository
